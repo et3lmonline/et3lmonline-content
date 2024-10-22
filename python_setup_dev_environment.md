@@ -27,6 +27,15 @@
     - Python Debugger
   - Jupyter: for notebooks support
   - isort: Import organization support for Python files using isort.
+  - Black Formatter: Formatting support for Python files using the Black formatter
+    ```bash
+    # check whether black is installed or not
+    pip freeze | findstr black # window
+    pip freeze | grep black # linux
+
+    # install black package if not installed
+    pip install black
+    ```
   - Extra:
     - Ruff
 
@@ -78,6 +87,7 @@
       "python.languageServer": "Pylance",
     "[python]": {
         "editor.codeActionsOnSave": {
+            // requires black package
             "source.organizeImports": "explicit"
         },
         "editor.defaultFormatter": "ms-python.black-formatter"
