@@ -1,5 +1,24 @@
 # Setup Development Environment
 
+<!-- TOC -->
+
+- [Setup Development Environment](#setup-development-environment)
+  - [Download \& Install Python](#download--install-python)
+  - [Microsoft VS Code](#microsoft-vs-code)
+    - [Extensions](#extensions)
+    - [Settings (My Personal preferences)](#settings-my-personal-preferences)
+    - [Custom Shortcuts (My Personal preferences)](#custom-shortcuts-my-personal-preferences)
+  - [Virtual Environment](#virtual-environment)
+    - [Conflict between different versions](#conflict-between-different-versions)
+    - [`venv`](#venv)
+      - [Creating virtual environment](#creating-virtual-environment)
+      - [Reproducing the same environment:](#reproducing-the-same-environment)
+      - [Split requirements into multiple files:](#split-requirements-into-multiple-files)
+      - [Specify the Python version used in the `venv`](#specify-the-python-version-used-in-the-venv)
+    - [VS Code and Python Interpreter](#vs-code-and-python-interpreter)
+
+<!-- /TOC -->
+
 ## Download & Install Python
 - (Arabic) YouTube video
 - Commands used
@@ -131,3 +150,126 @@
     }
 ]
 ```
+
+## Virtual Environment
+
+### Conflict between different versions
+```py
+"""
+pip uninstall pydantic -y
+pip install pydantic<2.0
+pip install pydantic==2.9.2
+"""
+
+from pydantic import BaseSettings
+
+
+class Settings(BaseSettings):
+    env: str = "prod"
+    logging_level: str = "INFO"
+
+
+settings = Settings()
+
+print("Settings Object\n\t", settings)
+print("Settings Dict\n\t", settings.dict())
+```
+
+### `venv`
+
+#### Creating virtual environment
+1. Create a virtual environment named **`.venv`**
+   ```bash
+   python -m venv .venv
+   ```
+2. Activate the virtual environment
+   ```bash
+   .venv/scripts/activate
+
+   .venv/Scripts/Activate.ps1 # PowerShell
+   source .venv/bin/activate # Linux
+   ```
+   - Fix PowerShell execution policy
+     ```powershell
+     # ⛔ Run with admin user, then restart the vscode
+     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+     # Extra commands
+     Get-ExecutionPolicy -List
+     Set-ExecutionPolicy -ExecutionPolicy Undefined -Scope CurrentUser -Force
+     ```
+3. Deactivate the virtual environment
+   ```bash
+   deactivate
+   ```
+4. Installing Python packages
+   ```bash
+   pip install pydantic # get the latest version
+   pip install pydantic==2.9.2 # specify a version
+   pip install pydantic==1.10.18 # specify a version
+   pip install -U pydantic # update a package to latest
+   pip install "requests>=2.31.0,<2.32"
+   ```
+
+
+#### Reproducing the same environment:
+- Creating the `requirements.txt` file
+  ```bash
+  pip freeze > requirements.txt
+  ```
+- Install all the packages from the `requirements.txt` file
+  ```bash
+  pip install -r requirements.txt
+  ```
+
+#### Split requirements into multiple files:
+- The main `requirements.txt` file
+  ```
+  pydantic==2.9.2
+  pandas==2.2.3
+  Jinja2==3.1.4
+  ```
+- The secondary `requirements-dev.txt` file(s)
+  ```
+  # relative path to this file
+  -r ./requirements.txt
+
+  black
+  pytest
+  ```
+  ```bash
+  pip install -r requirements-dev.txt
+  ```
+
+#### Specify the Python version used in the `venv`
+- List all available versions
+  ```bash
+  py -0
+  py -0p # with path to python.exe
+  ```
+
+- Creating a virtual environment using Python 3.10
+  ```by
+  py -3.10 -m venv .venv10
+  py -m venv .venv_xyz
+
+  # activate / check the version
+  .venv10/Scripts/activate
+  py --version
+  deactivate
+
+  .venv_xyz/Scripts/activate
+  python --version
+  deactivate
+  ```
+
+### VS Code and Python Interpreter
+- Ctrl + Shift + P > Python: Select Interpreter
+- Settings
+  ```json
+  {
+    // the Python the extension will read values from when loading the project for the first time
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+  }
+  ```
+
