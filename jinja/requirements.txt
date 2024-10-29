@@ -1,0 +1,2 @@
+Jinja2==3.1.4
+ipykernel==6.29.5 # for Jupyter notebooks in VSCode

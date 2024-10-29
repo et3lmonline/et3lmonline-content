@@ -1,0 +1,2 @@
+Dear {{title}} {{name}},
+    Kindly be noted that your order {{ order_number }} has been processed.
